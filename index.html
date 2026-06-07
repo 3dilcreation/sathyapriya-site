@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sathyapriya · A Space to Heal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+  :root {
+    --sand: #f4efe6; --sand-deep: #ece4d5; --clay: #c9a98a;
+    --sage: #8a9b7e; --sage-deep: #5f7058; --ink: #3a352d;
+    --ink-soft: #6a6256; --cream: #fbf8f2; --terra: #b9785f;
+    --shadow: rgba(95, 112, 88, 0.12);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Outfit', sans-serif; background: var(--sand); color: var(--ink); line-height: 1.7; overflow-x: hidden; }
+  body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  h1, h2, h3, h4 { font-family: 'Fraunces', serif; font-weight: 400; line-height: 1.15; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center;
+    padding: 1.4rem 2.5rem; z-index: 1000; backdrop-filter: blur(10px); background: rgba(244, 239, 230, 0.7); transition: padding 0.4s, background 0.4s; }
+  nav.scrolled { padding: 0.9rem 2.5rem; background: rgba(244, 239, 230, 0.92); box-shadow: 0 4px 30px var(--shadow); }
+  .logo { font-family: 'Fraunces', serif; font-size: 1.35rem; letter-spacing: 0.02em; color: var(--sage-deep); }
+  .logo span { color: var(--terra); }
+  .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-soft); font-size: 0.9rem; letter-spacing: 0.04em; position: relative; transition: color 0.3s; }
+  .nav-links a::after { content: ""; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--terra); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--ink); } .nav-links a:hover::after { width: 100%; }
+  .nav-toggle { display: none; background: none; border: none; font-size: 1.5rem; color: var(--sage-deep); cursor: pointer; }
+
+  header { min-height: 100vh; display: flex; align-items: center; position: relative; padding: 8rem 2.5rem 4rem; overflow: hidden; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.5; z-index: 0; animation: float 18s ease-in-out infinite; }
+  .blob-1 { width: 480px; height: 480px; background: var(--clay); top: -100px; right: -80px; }
+  .blob-2 { width: 380px; height: 380px; background: var(--sage); bottom: -120px; left: -60px; animation-delay: -6s; }
+  .blob-3 { width: 300px; height: 300px; background: var(--terra); top: 40%; left: 50%; opacity: 0.22; animation-delay: -11s; }
+  @keyframes float { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(30px,-40px) scale(1.08);} 66%{transform:translate(-25px,25px) scale(0.95);} }
+  .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 2; width: 100%; }
+  .eyebrow { font-size: 0.82rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--terra); margin-bottom: 1.5rem; opacity: 0; animation: rise 0.9s ease 0.2s forwards; }
+  .hero-inner h1 { font-size: clamp(2.8rem, 7vw, 5.5rem); color: var(--ink); max-width: 14ch; margin-bottom: 1.8rem; opacity: 0; animation: rise 0.9s ease 0.4s forwards; }
+  .hero-inner h1 em { font-style: italic; color: var(--sage-deep); }
+  .hero-lead { font-size: 1.15rem; color: var(--ink-soft); max-width: 48ch; margin-bottom: 2.5rem; opacity: 0; animation: rise 0.9s ease 0.6s forwards; }
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: rise 0.9s ease 0.8s forwards; }
+  @keyframes rise { from{opacity:0;transform:translateY(28px);} to{opacity:1;transform:translateY(0);} }
+
+  .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.95rem 2rem; border-radius: 100px; font-family: 'Outfit'; font-size: 0.95rem; font-weight: 500; letter-spacing: 0.03em; text-decoration: none; cursor: pointer; border: none; transition: transform 0.3s, box-shadow 0.3s; }
+  .btn-primary { background: var(--sage-deep); color: var(--cream); box-shadow: 0 8px 24px rgba(95,112,88,0.3); }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(95,112,88,0.4); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--clay); }
+  .btn-ghost:hover { background: var(--clay); color: var(--cream); transform: translateY(-3px); }
+
+  section { padding: 7rem 2.5rem; position: relative; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-tag { font-size: 0.78rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--terra); margin-bottom: 1rem; }
+  .section-title { font-size: clamp(2rem, 4.5vw, 3.2rem); color: var(--ink); margin-bottom: 1.5rem; max-width: 18ch; }
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.9s, transform 0.9s; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  #about { background: var(--cream); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .about-text p { color: var(--ink-soft); margin-bottom: 1.2rem; font-size: 1.05rem; }
+  .about-text p strong { color: var(--ink); font-weight: 500; }
+  .portrait { aspect-ratio: 4/5; border-radius: 200px 200px 12px 12px; position: relative; overflow: hidden; background: linear-gradient(160deg, var(--sage) 0%, var(--clay) 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 30px 60px var(--shadow); }
+  .portrait .initial { font-family: 'Fraunces', serif; font-size: 8rem; color: var(--cream); opacity: 0.9; font-style: italic; }
+  .portrait::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, rgba(251,248,242,0.35), transparent 60%); }
+  .portrait-note { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: rgba(251,248,242,0.92); padding: 0.5rem 1.3rem; border-radius: 100px; font-size: 0.82rem; color: var(--sage-deep); letter-spacing: 0.05em; white-space: nowrap; }
+
+  .qual-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .qual-card { background: var(--cream); padding: 2.2rem 1.8rem; border-radius: 18px; border: 1px solid rgba(201,169,138,0.25); transition: transform 0.4s, box-shadow 0.4s; }
+  .qual-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px var(--shadow); }
+  .qual-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+  .qual-card h3 { font-size: 1.3rem; margin-bottom: 0.6rem; color: var(--sage-deep); }
+  .qual-card p { color: var(--ink-soft); font-size: 0.96rem; }
+
+  #tools { background: linear-gradient(170deg, var(--sand) 0%, var(--sand-deep) 100%); }
+  .ai-badge { display: inline-block; background: var(--sage-deep); color: var(--cream); font-size: 0.68rem; letter-spacing: 0.15em; padding: 0.25rem 0.7rem; border-radius: 100px; margin-left: 0.6rem; vertical-align: middle; text-transform: uppercase; }
+  .tool-tabs { display: flex; gap: 0.8rem; margin: 2.5rem 0 2rem; flex-wrap: wrap; }
+  .tool-tab { padding: 0.7rem 1.4rem; border-radius: 100px; background: var(--cream); border: 1.5px solid rgba(201,169,138,0.4); cursor: pointer; font-family: 'Outfit'; font-size: 0.92rem; color: var(--ink-soft); transition: all 0.3s; }
+  .tool-tab.active { background: var(--sage-deep); color: var(--cream); border-color: var(--sage-deep); }
+  .tool-panel { background: var(--cream); border-radius: 22px; padding: 2.5rem; box-shadow: 0 20px 50px var(--shadow); display: none; }
+  .tool-panel.active { display: block; animation: rise 0.5s ease; }
+  .tool-panel h3 { font-size: 1.6rem; color: var(--sage-deep); margin-bottom: 0.5rem; }
+  .tool-panel .hint { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 1.5rem; }
+  .tool-panel textarea, .tool-panel input, .tool-panel select { width: 100%; padding: 0.85rem 1rem; border-radius: 10px; border: 1.5px solid rgba(201,169,138,0.4); background: var(--sand); font-family: 'Outfit'; font-size: 0.95rem; color: var(--ink); margin-bottom: 1rem; }
+  .tool-panel textarea:focus, .tool-panel input:focus, .tool-panel select:focus { outline: none; border-color: var(--sage); box-shadow: 0 0 0 3px rgba(138,155,126,0.18); }
+  .tool-panel textarea { resize: vertical; min-height: 90px; }
+  .tool-output { margin-top: 1.5rem; padding: 1.5rem; background: var(--sand); border-radius: 14px; border-left: 4px solid var(--sage); white-space: pre-wrap; color: var(--ink); font-size: 1rem; line-height: 1.8; display: none; }
+  .tool-output.show { display: block; animation: rise 0.5s ease; }
+  .tool-disclaimer { margin-top: 1.2rem; font-size: 0.8rem; color: var(--ink-soft); font-style: italic; opacity: 0.85; }
+  .loading { display: inline-block; }
+  .loading::after { content: "thinking gently"; animation: dots 1.5s infinite; }
+  @keyframes dots { 0%,20%{content:"thinking gently";} 40%{content:"thinking gently.";} 60%{content:"thinking gently..";} 80%,100%{content:"thinking gently...";} }
+
+  #journey { background: var(--sage-deep); color: var(--cream); }
+  #journey .section-tag { color: var(--clay); } #journey .section-title { color: var(--cream); }
+  .timeline { margin-top: 3rem; display: grid; gap: 0; }
+  .t-item { display: grid; grid-template-columns: 160px 1fr; gap: 2rem; padding: 1.8rem 0; border-top: 1px solid rgba(251,248,242,0.18); align-items: baseline; }
+  .t-item:last-child { border-bottom: 1px solid rgba(251,248,242,0.18); }
+  .t-year { font-family: 'Fraunces', serif; font-size: 1.1rem; color: var(--clay); }
+  .t-body h3 { font-size: 1.35rem; margin-bottom: 0.4rem; }
+  .t-body p { color: rgba(251,248,242,0.75); font-size: 0.98rem; }
+
+  #blog { background: var(--sand); }
+  .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem; margin-top: 3rem; }
+  .post { background: var(--cream); border-radius: 18px; overflow: hidden; cursor: pointer; border: 1px solid rgba(201,169,138,0.25); transition: transform 0.4s, box-shadow 0.4s; display: flex; flex-direction: column; }
+  .post:hover { transform: translateY(-8px); box-shadow: 0 24px 48px var(--shadow); }
+  .post-img { height: 160px; position: relative; overflow: hidden; }
+  .post:nth-child(1) .post-img { background: linear-gradient(135deg, var(--sage), var(--sage-deep)); }
+  .post:nth-child(2) .post-img { background: linear-gradient(135deg, var(--clay), var(--terra)); }
+  .post:nth-child(3) .post-img { background: linear-gradient(135deg, var(--terra), var(--clay)); }
+  .post:nth-child(4) .post-img { background: linear-gradient(135deg, var(--sage-deep), var(--clay)); }
+  .post:nth-child(5) .post-img { background: linear-gradient(135deg, var(--clay), var(--sage)); }
+  .post:nth-child(6) .post-img { background: linear-gradient(135deg, var(--sage), var(--terra)); }
+  .post-img span { position: absolute; bottom: 1rem; left: 1.2rem; font-size: 2rem; }
+  .post-body { padding: 1.6rem; flex: 1; display: flex; flex-direction: column; }
+  .post-cat { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--terra); margin-bottom: 0.7rem; }
+  .post-body h3 { font-size: 1.25rem; margin-bottom: 0.7rem; color: var(--ink); }
+  .post-body p { color: var(--ink-soft); font-size: 0.92rem; flex: 1; }
+  .post-meta { margin-top: 1.2rem; font-size: 0.82rem; color: var(--clay); display: flex; justify-content: space-between; }
+
+  #shop { background: var(--cream); }
+  .shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem; margin-top: 3rem; }
+  .product { background: var(--sand); border-radius: 18px; overflow: hidden; border: 1px solid rgba(201,169,138,0.25); transition: transform 0.4s, box-shadow 0.4s; display: flex; flex-direction: column; }
+  .product:hover { transform: translateY(-6px); box-shadow: 0 20px 44px var(--shadow); }
+  .product-img { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+  .product:nth-child(1) .product-img { background: linear-gradient(135deg, var(--sage), var(--sage-deep)); }
+  .product:nth-child(2) .product-img { background: linear-gradient(135deg, var(--clay), var(--terra)); }
+  .product:nth-child(3) .product-img { background: linear-gradient(135deg, var(--terra), var(--sage)); }
+  .product-body { padding: 1.6rem; flex: 1; display: flex; flex-direction: column; }
+  .product-body h3 { font-size: 1.2rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .product-body p { color: var(--ink-soft); font-size: 0.9rem; flex: 1; margin-bottom: 1rem; }
+  .product-foot { display: flex; align-items: center; justify-content: space-between; }
+  .price { font-family: 'Fraunces', serif; font-size: 1.4rem; color: var(--sage-deep); }
+  .price small { font-size: 0.8rem; color: var(--ink-soft); }
+  .btn-sm { padding: 0.6rem 1.3rem; font-size: 0.85rem; border-radius: 100px; background: var(--terra); color: var(--cream); border: none; cursor: pointer; transition: transform 0.3s; font-family: 'Outfit'; }
+  .btn-sm:hover { transform: scale(1.05); }
+  .shop-soon { text-align: center; margin-top: 2rem; color: var(--ink-soft); font-style: italic; }
+
+  #inspiration { background: var(--sand-deep); }
+  .quote-block { max-width: 760px; margin: 0 auto; text-align: center; }
+  .quote-block blockquote { font-family: 'Fraunces', serif; font-style: italic; font-size: clamp(1.5rem, 3.5vw, 2.3rem); color: var(--ink); line-height: 1.4; margin: 2rem 0; }
+  .inspirers { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2.5rem; }
+  .chip { padding: 0.6rem 1.4rem; border-radius: 100px; background: var(--cream); color: var(--ink-soft); font-size: 0.9rem; }
+
+  #connect { background: var(--sage-deep); }
+  #connect .section-tag { color: var(--clay); } #connect .section-title { color: var(--cream); }
+  .connect-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 4rem; align-items: start; }
+  .connect-intro p { color: rgba(251,248,242,0.8); font-size: 1.05rem; margin-bottom: 1.5rem; }
+  .connect-points { list-style: none; margin-top: 1.5rem; }
+  .connect-points li { padding: 0.6rem 0; padding-left: 1.8rem; position: relative; color: rgba(251,248,242,0.8); }
+  .connect-points li::before { content: "✦"; position: absolute; left: 0; color: var(--clay); }
+  form#bookingForm { background: var(--cream); padding: 2.5rem; border-radius: 22px; box-shadow: 0 20px 50px var(--shadow); }
+  .field { margin-bottom: 1.3rem; }
+  .field label { display: block; font-size: 0.85rem; letter-spacing: 0.04em; color: var(--sage-deep); margin-bottom: 0.5rem; font-weight: 500; }
+  .field input, .field select, .field textarea { width: 100%; padding: 0.85rem 1rem; border-radius: 10px; border: 1.5px solid rgba(201,169,138,0.4); background: var(--sand); font-family: 'Outfit'; font-size: 0.95rem; color: var(--ink); transition: border 0.3s, box-shadow 0.3s; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--sage); box-shadow: 0 0 0 3px rgba(138,155,126,0.18); }
+  .field textarea { resize: vertical; min-height: 100px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-msg { margin-top: 1rem; padding: 0.9rem 1rem; border-radius: 10px; font-size: 0.9rem; display: none; }
+  .form-msg.show { display: block; } .form-msg.ok { background: rgba(138,155,126,0.18); color: var(--sage-deep); }
+
+  footer { background: var(--ink); color: var(--sand); padding: 4rem 2.5rem 2.5rem; text-align: center; }
+  footer .logo { font-size: 1.8rem; display: block; margin-bottom: 1rem; }
+  .socials { display: flex; gap: 1.5rem; justify-content: center; margin: 1.8rem 0; }
+  .socials a { color: var(--clay); text-decoration: none; font-size: 0.9rem; letter-spacing: 0.05em; transition: color 0.3s; }
+  .socials a:hover { color: var(--cream); }
+  .copyright { font-size: 0.8rem; color: rgba(244,239,230,0.5); margin-top: 1.5rem; }
+
+  .her-toggle { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1100; background: var(--ink); color: var(--sand); border: none; padding: 0.7rem 1.1rem; border-radius: 100px; font-size: 0.8rem; cursor: pointer; box-shadow: 0 8px 24px var(--shadow); font-family: 'Outfit'; opacity: 0.6; transition: opacity 0.3s; }
+  .her-toggle:hover { opacity: 1; }
+  .her-modal { position: fixed; inset: 0; background: rgba(58,53,45,0.5); backdrop-filter: blur(6px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1.5rem; }
+  .her-modal.open { display: flex; }
+  .her-panel { background: var(--cream); border-radius: 22px; padding: 2.5rem; max-width: 640px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+  .her-panel h3 { font-size: 1.6rem; color: var(--sage-deep); margin-bottom: 0.4rem; }
+  .her-close { position: absolute; top: 1.2rem; right: 1.2rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--ink-soft); }
+  .her-panel input, .her-panel select, .her-panel textarea { width: 100%; padding: 0.85rem 1rem; border-radius: 10px; border: 1.5px solid rgba(201,169,138,0.4); background: var(--sand); font-family: 'Outfit'; font-size: 0.95rem; margin-bottom: 1rem; }
+  .her-panel textarea { resize: vertical; min-height: 70px; }
+
+  @media (max-width: 860px) {
+    .nav-links { position: fixed; top: 0; right: -100%; width: 72%; height: 100vh; flex-direction: column; background: var(--cream); padding: 6rem 2rem; gap: 1.6rem; transition: right 0.4s; box-shadow: -10px 0 40px var(--shadow); overflow-y: auto; }
+    .nav-links.open { right: 0; } .nav-toggle { display: block; z-index: 1001; }
+    .about-grid, .connect-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .qual-grid, .blog-grid, .shop-grid { grid-template-columns: 1fr; }
+    .t-item { grid-template-columns: 1fr; gap: 0.4rem; } section { padding: 5rem 1.5rem; }
+    nav { padding: 1.1rem 1.5rem; } .form-row { grid-template-columns: 1fr; } .portrait { max-width: 340px; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="logo">Sathya<span>priya</span></div>
+  <button class="nav-toggle" id="navToggle">&#9776;</button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#tools">AI Tools</a></li>
+    <li><a href="#blog">Writings</a></li>
+    <li><a href="#shop">Resources</a></li>
+    <li><a href="#connect">Connect</a></li>
+  </ul>
+</nav>
+
+<header>
+  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+  <div class="hero-inner">
+    <p class="eyebrow">A gentle space to be heard</p>
+    <h1>Healing begins where someone truly <em>listens.</em></h1>
+    <p class="hero-lead">I'm Sathyapriya &mdash; drawn to the quiet work of understanding people: their pain, their patterns, and the wounds they carry inside. Explore gentle tools, reflections, and a safe space to talk things through.</p>
+    <div class="hero-cta">
+      <a href="#connect" class="btn btn-primary">Book a conversation</a>
+      <a href="#tools" class="btn btn-ghost">Try the gentle tools</a>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="container">
+    <div class="about-grid reveal">
+      <div class="portrait"><span class="initial">S</span><span class="portrait-note">empathy &middot; curiosity &middot; kindness</span></div>
+      <div class="about-text">
+        <p class="section-tag">About me</p>
+        <h2 class="section-title">I listen to understand, never to judge.</h2>
+        <p>People often find themselves opening up to me &mdash; their struggles, their fears, the things they've never said aloud. I believe <strong>everyone deserves to be met with kindness</strong>, even those the world finds hard to love.</p>
+        <p>My mind is wired to wonder <em>why</em> &mdash; why we behave the way we do, what shapes a child's inner world, and how the right words at the right moment can help someone feel understood.</p>
+        <p>With a background in <strong>Mathematics and Statistics</strong> and over <strong>8 years coordinating at an international school</strong>, I bring both analytical clarity and deep warmth to my work with people, especially children and the vulnerable.</p>
+        <p>When I'm not listening, you'll find me singing, dancing, and laughing with children &mdash; or volunteering on 7 Cups, simply being there for someone who needs a kind ear.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="qualities">
+  <div class="container">
+    <div class="reveal"><p class="section-tag">How I help</p><h2 class="section-title">A few of the ways I hold space</h2></div>
+    <div class="qual-grid">
+      <div class="qual-card reveal"><div class="qual-icon">&#127807;</div><h3>Deep Listening</h3><p>I listen beneath the words &mdash; to the feeling underneath &mdash; so you feel genuinely understood, not analysed.</p></div>
+      <div class="qual-card reveal"><div class="qual-icon">&#129504;</div><h3>Behavioural Insight</h3><p>Curious about why we act as we do, I help untangle patterns and the situations that shape them.</p></div>
+      <div class="qual-card reveal"><div class="qual-icon">&#127800;</div><h3>Child Psychology</h3><p>Children flourish when they feel safe and seen. I create that space through play, song, and patience.</p></div>
+      <div class="qual-card reveal"><div class="qual-icon">&#128172;</div><h3>Compassionate Communication</h3><p>I help find the words &mdash; how to say things so the other person can truly receive them.</p></div>
+      <div class="qual-card reveal"><div class="qual-icon">&#129293;</div><h3>No Judgement, Ever</h3><p>Whoever you are, whatever you carry, you'll be met with kindness and no judgement.</p></div>
+      <div class="qual-card reveal"><div class="qual-icon">&#10024;</div><h3>Inner Healing</h3><p>My deepest joy is helping others tend to the wounds they carry inside and find their own way forward.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-tag">Gentle tools <span class="ai-badge">AI assisted</span></p>
+      <h2 class="section-title">Little companions for reflection</h2>
+      <p style="color:var(--ink-soft); max-width:56ch;">These tools are here to help you reflect and find words &mdash; not to replace real human support. For anything heavy on your heart, I'd love for you to reach out to me directly.</p>
+    </div>
+    <div class="tool-tabs reveal">
+      <button class="tool-tab active" data-tool="journal">&#127793; Journaling Prompt</button>
+      <button class="tool-tab" data-tool="words">&#128172; Help Me Say It</button>
+      <button class="tool-tab" data-tool="need">&#129517; Find What You Need</button>
+    </div>
+
+    <div class="tool-panel active reveal" id="panel-journal">
+      <h3>Reflective Journaling Prompt</h3>
+      <p class="hint">Tell me a little about how you're feeling today, and I'll offer a gentle prompt to explore in your journal.</p>
+      <textarea id="journalInput" placeholder="e.g. I've been feeling restless and I'm not sure why..."></textarea>
+      <button class="btn btn-primary" onclick="runTool('journal')">Offer me a prompt</button>
+      <div class="tool-output" id="journal-out"></div>
+      <p class="tool-disclaimer">A reflection tool only &mdash; not therapy or advice. If you're struggling, please reach out to Sathyapriya or a professional.</p>
+    </div>
+
+    <div class="tool-panel reveal" id="panel-words">
+      <h3>Help Me Say It Kindly</h3>
+      <p class="hint">Describe something you need to say &mdash; to a child, a partner, anyone &mdash; and I'll suggest a gentle, compassionate way to word it.</p>
+      <input type="text" id="wordsWho" placeholder="Who is this for? (e.g. my 7-year-old, my friend)">
+      <textarea id="wordsInput" placeholder="What do you want to express? e.g. I want to tell my child it's okay to make mistakes..."></textarea>
+      <button class="btn btn-primary" onclick="runTool('words')">Suggest kind words</button>
+      <div class="tool-output" id="words-out"></div>
+      <p class="tool-disclaimer">Suggestions to inspire your own words &mdash; you know your people best.</p>
+    </div>
+
+    <div class="tool-panel reveal" id="panel-need">
+      <h3>Find What You Need</h3>
+      <p class="hint">Not sure where to begin? Share what's bringing you here and I'll gently point you toward the right next step.</p>
+      <textarea id="needInput" placeholder="e.g. I'm a parent worried about my child's confidence at school..."></textarea>
+      <button class="btn btn-primary" onclick="runTool('need')">Guide me</button>
+      <div class="tool-output" id="need-out"></div>
+      <p class="tool-disclaimer">A friendly signpost, not a diagnosis. Booking a real conversation is always the best next step.</p>
+    </div>
+  </div>
+</section>
+
+<section id="journey">
+  <div class="container">
+    <div class="reveal"><p class="section-tag">My journey</p><h2 class="section-title">Where analysis meets the heart</h2></div>
+    <div class="timeline">
+      <div class="t-item reveal"><div class="t-year">Education</div><div class="t-body"><h3>Mathematics &amp; Statistics</h3><p>An undergraduate degree in Mathematics and a postgraduate degree in Statistics &mdash; a foundation of clarity, logic, and pattern-thinking.</p></div></div>
+      <div class="t-item reveal"><div class="t-year">8+ Years</div><div class="t-body"><h3>International School Coordinator</h3><p>Over eight years guiding and connecting with children, parents, and educators in an international school setting.</p></div></div>
+      <div class="t-item reveal"><div class="t-year">Daily</div><div class="t-body"><h3>Volunteer Listener &middot; 7 Cups</h3><p>Offering free, confidential emotional support to people around the world who simply need someone to listen.</p></div></div>
+      <div class="t-item reveal"><div class="t-year">Always</div><div class="t-body"><h3>Student of the Human Mind</h3><p>Continuously exploring behavioural and child psychology &mdash; and the lifelong practice of presence and compassion.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="blog">
+  <div class="container">
+    <div class="reveal"><p class="section-tag">Writings</p><h2 class="section-title">Reflections on healing, minds &amp; being human</h2></div>
+    <div class="blog-grid">
+      <article class="post reveal"><div class="post-img"><span>&#127807;</span></div><div class="post-body"><p class="post-cat">Inner Healing</p><h3>The Quiet Power of Being Heard</h3><p>Why simply listening &mdash; without fixing &mdash; can be the most healing gift we offer another person.</p><div class="post-meta"><span>Reflection</span><span>5 min read</span></div></div></article>
+      <article class="post reveal"><div class="post-img"><span>&#129504;</span></div><div class="post-body"><p class="post-cat">Behavioural Psychology</p><h3>Why We Behave the Way We Do</h3><p>A gentle look at the hidden stories that shape our reactions &mdash; and how understanding them sets us free.</p><div class="post-meta"><span>Essay</span><span>7 min read</span></div></div></article>
+      <article class="post reveal"><div class="post-img"><span>&#127800;</span></div><div class="post-body"><p class="post-cat">Child Psychology</p><h3>What Children Teach Us About Trust</h3><p>Children open up when they feel safe. What their honesty teaches the grown-up world about connection.</p><div class="post-meta"><span>Notes</span><span>4 min read</span></div></div></article>
+      <article class="post reveal"><div class="post-img"><span>&#128172;</span></div><div class="post-body"><p class="post-cat">Communication</p><h3>Saying It So They Can Hear It</h3><p>The same truth can wound or heal depending on how it's offered. On compassionate words.</p><div class="post-meta"><span>Guide</span><span>6 min read</span></div></div></article>
+      <article class="post reveal"><div class="post-img"><span>&#128330;</span></div><div class="post-body"><p class="post-cat">Kindness</p><h3>Loving the Hard-to-Love</h3><p>Even the most difficult people are carrying something. On meeting everyone with kindness.</p><div class="post-meta"><span>Reflection</span><span>5 min read</span></div></div></article>
+      <article class="post reveal"><div class="post-img"><span>&#10024;</span></div><div class="post-body"><p class="post-cat">Presence</p><h3>Stillness, Awareness &amp; The Present</h3><p>Inspired by teachers of presence &mdash; how returning to <em>now</em> dissolves so much inner suffering.</p><div class="post-meta"><span>Reflection</span><span>6 min read</span></div></div></article>
+    </div>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="container">
+    <div class="reveal"><p class="section-tag">Resources</p><h2 class="section-title">Gentle resources for your journey</h2>
+    <p style="color:var(--ink-soft); max-width:56ch;">A small, growing collection of guides and tools I've created with care. (Coming soon &mdash; these are samples of what's ahead.)</p></div>
+    <div class="shop-grid">
+      <div class="product reveal"><div class="product-img">&#128214;</div><div class="product-body"><h3>The 30-Day Reflection Journal</h3><p>A guided digital journal with daily prompts for self-understanding and gentle healing.</p><div class="product-foot"><span class="price">&#8377;299 <small>PDF</small></span><button class="btn-sm" onclick="buyProduct('The 30-Day Reflection Journal', 299)">Buy now</button></div></div></div>
+      <div class="product reveal"><div class="product-img">&#129528;</div><div class="product-body"><h3>Parenting with Empathy</h3><p>A practical mini-guide to understanding and gently communicating with your child.</p><div class="product-foot"><span class="price">&#8377;499 <small>eBook</small></span><button class="btn-sm" onclick="buyProduct('Parenting with Empathy', 499)">Buy now</button></div></div></div>
+      <div class="product reveal"><div class="product-img">&#127911;</div><div class="product-body"><h3>Guided Calm Audio Pack</h3><p>Short audio sessions for stillness, presence, and quieting an anxious mind.</p><div class="product-foot"><span class="price">&#8377;399 <small>Audio</small></span><button class="btn-sm" onclick="buyProduct('Guided Calm Audio Pack', 399)">Buy now</button></div></div></div>
+    </div>
+    <p class="shop-soon reveal">More resources are on the way. Want early access? Mention it in the Connect form below. &#129293;</p>
+  </div>
+</section>
+
+<section id="inspiration">
+  <div class="container">
+    <div class="quote-block reveal">
+      <p class="section-tag" style="text-align:center;">What moves me</p>
+      <blockquote>"The most precious gift we can offer anyone is our attention."</blockquote>
+      <p style="color: var(--ink-soft);">My path is lit by teachers who speak to both the mind and the spirit &mdash; voices that remind me healing is possible, and presence is everything.</p>
+      <div class="inspirers"><span class="chip">Dr. Joe Dispenza</span><span class="chip">Eckhart Tolle</span><span class="chip">Sadhguru</span><span class="chip">Oprah Winfrey</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="connect">
+  <div class="container">
+    <div class="connect-grid">
+      <div class="connect-intro reveal">
+        <p class="section-tag">Connect</p>
+        <h2 class="section-title">Let's talk &mdash; you'll be heard.</h2>
+        <p>Whether you're carrying something heavy, want guidance for a child, or simply need a kind, non-judgemental space to think out loud &mdash; I'm here.</p>
+        <ul class="connect-points">
+          <li>A safe, confidential conversation</li>
+          <li>No judgement, no pressure</li>
+          <li>For individuals, parents &amp; children</li>
+          <li>Online or in person</li>
+        </ul>
+      </div>
+      <form id="bookingForm" class="reveal" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="form-row">
+          <div class="field"><label for="name">Your name</label><input type="text" id="name" name="name" required placeholder="How may I call you?"></div>
+          <div class="field"><label for="email">Email</label><input type="email" id="email" name="email" required placeholder="you@email.com"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="type">I'd like to...</label><select id="type" name="request_type"><option>Book a conversation</option><option>Talk about my child</option><option>Just ask a question</option><option>Early access to resources</option></select></div>
+          <div class="field"><label for="date">Preferred date</label><input type="date" id="date" name="preferred_date"></div>
+        </div>
+        <div class="field"><label for="message">What's on your heart?</label><textarea id="message" name="message" placeholder="Share as much or as little as you'd like..."></textarea></div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Send with care &rarr;</button>
+        <div class="form-msg ok" id="formMsg">Thank you for reaching out. Sathyapriya will get back to you soon &mdash; take care of yourself in the meantime. &#129293;</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="logo">Sathya<span style="color:var(--clay)">priya</span></span>
+  <p style="max-width:40ch; margin:0 auto; color:rgba(244,239,230,0.7); font-size:0.95rem;">Listening, understanding, and helping others heal from the inside out.</p>
+  <div class="socials"><a href="#">7 Cups</a><a href="#">Instagram</a><a href="#">Email</a><a href="#blog">Writings</a></div>
+  <p class="copyright">&copy; 2026 Sathyapriya &middot; Made with empathy</p>
+</footer>
+
+<button class="her-toggle" id="herToggle">&#9997;&#65039; For Sathyapriya</button>
+<div class="her-modal" id="herModal">
+  <div class="her-panel">
+    <button class="her-close" id="herClose">&times;</button>
+    <h3>Blog Draft Assistant</h3>
+    <p class="hint" style="color:var(--ink-soft); margin-bottom:1.5rem;">Your private writing companion. Give a topic and I'll draft a warm, reflective post in your voice &mdash; ready to edit and publish.</p>
+    <input type="text" id="herTopic" placeholder="Topic or title idea (e.g. helping a shy child speak up)">
+    <select id="herTone">
+      <option>Warm &amp; reflective</option>
+      <option>Gentle &amp; practical</option>
+      <option>Storytelling / personal</option>
+      <option>Short &amp; poetic</option>
+    </select>
+    <select id="herLength">
+      <option>Short (~300 words)</option>
+      <option>Medium (~600 words)</option>
+      <option>Full post (~900 words)</option>
+    </select>
+    <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="runTool('blog')">Draft my post</button>
+    <div class="tool-output" id="blog-out"></div>
+  </div>
+</div>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+  const toggle = document.getElementById('navToggle'), links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { e.target.style.transitionDelay = (i % 3 * 0.1) + 's'; e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  document.querySelectorAll('.tool-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.tool).classList.add('active');
+    });
+  });
+
+  document.getElementById('herToggle').addEventListener('click', () => document.getElementById('herModal').classList.add('open'));
+  document.getElementById('herClose').addEventListener('click', () => document.getElementById('herModal').classList.remove('open'));
+  document.getElementById('herModal').addEventListener('click', (e) => { if (e.target.id === 'herModal') e.target.classList.remove('open'); });
+
+  document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = this;
+    if (!document.getElementById('name').value || !document.getElementById('email').value) return;
+    const btn = form.querySelector('button');
+    btn.textContent = 'Sending...';
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        document.getElementById('formMsg').classList.add('show');
+        btn.textContent = 'Message sent';
+        setTimeout(() => { form.reset(); btn.textContent = 'Send with care \u2192'; }, 2500);
+      } else {
+        btn.textContent = 'Something went wrong - try again';
+      }
+    } catch (err) {
+      btn.textContent = 'Could not send - try again';
+    }
+  });
+
+  // ===== SHOP: Razorpay payment =====
+  // To activate: 1) sign up at razorpay.com  2) get your Key ID
+  // 3) replace RAZORPAY_KEY_ID below. Until then it shows a friendly message.
+  const RAZORPAY_KEY_ID = "RAZORPAY_KEY_ID"; // <-- paste your real Key ID here
+
+  function buyProduct(name, amountRupees) {
+    if (RAZORPAY_KEY_ID === "RAZORPAY_KEY_ID") {
+      alert("Store opens soon! Payments aren't active yet. (To enable: add a Razorpay Key ID.)");
+      return;
+    }
+    const options = {
+      key: RAZORPAY_KEY_ID,
+      amount: amountRupees * 100, // amount in paise
+      currency: "INR",
+      name: "Sathyapriya",
+      description: name,
+      handler: function (response) {
+        alert("Thank you! Your payment was received. You'll get the download link by email shortly. 🤍");
+        // Tip: for automatic delivery, connect this to an email/download flow later.
+      },
+      theme: { color: "#5f7058" }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+  async function runTool(kind) {
+    const map = {
+      journal: { input: 'journalInput', out: 'journal-out' },
+      words:   { input: 'wordsInput', out: 'words-out', who: 'wordsWho' },
+      need:    { input: 'needInput', out: 'need-out' },
+      blog:    { input: 'herTopic', out: 'blog-out', tone: 'herTone', length: 'herLength' }
+    };
+    const cfg = map[kind];
+    const main = document.getElementById(cfg.input).value.trim();
+    if (!main) { alert('Please share a little first'); return; }
+    const data = { main: main,
+      who: cfg.who ? document.getElementById(cfg.who).value.trim() : '',
+      tone: cfg.tone ? document.getElementById(cfg.tone).value : '',
+      length: cfg.length ? document.getElementById(cfg.length).value : '' };
+    const outEl = document.getElementById(cfg.out);
+    outEl.classList.add('show');
+    outEl.innerHTML = '<span class="loading"></span>';
+
+    try {
+      const response = await fetch("/.netlify/functions/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: kind, data: data })
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        outEl.textContent = result.error || "I couldn't connect right now. Please try again in a moment.";
+        return;
+      }
+      outEl.textContent = result.text || 'I had trouble finding words just now. Please try again.';
+    } catch (err) {
+      outEl.textContent = "I couldn't connect right now. (If you're testing locally, the AI tools only work once deployed to Netlify.)";
+    }
+  }
+</script>
+</body>
+</html>
